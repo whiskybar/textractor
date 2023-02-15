@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "textractor"
+version = "0.1.0"
+description = "Extract text from websites (or APIs)."
+authors = ["Jiri Barton <jbar@tele3.cz>"]
+license = "Apache-2.0 license"
+readme = "README.md"
+packages = [{include = "textractor"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.92.0"
+uvicorn = {extras = ["standard"], version = "^0.20.0"}
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+pylint = "^2.16.2"
+isort = "^5.12.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
