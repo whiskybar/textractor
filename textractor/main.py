@@ -1,14 +1,20 @@
+from enum import Enum
+
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 
 from .storage import storage
 
 
+class Language(str, Enum):
+    BeatifulSoup = 'BeatifulSoup'
+
+
 class Definition(BaseModel):
     key: str
-    url: str
+    url: HttpUrl
     pattern: str
-    language: str | None = 'BeatifulSoup'
+    language: Language | None = Language.BeatifulSoup
 
 
 app = FastAPI()
@@ -28,6 +34,6 @@ async def extract(key: str):
 
 
 @app.post('/define/')
-async def define(definition: Definition) -> str:
+async def define(definition: Definition):
     await storage.set(definition.key, definition.dict())
     return {'message': f'definition {definition.key} updated'}
