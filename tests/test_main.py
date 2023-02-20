@@ -18,7 +18,14 @@ def get_test_storage():
 app.dependency_overrides[get_storage] = get_test_storage
 
 
-@pytest.mark.anyio
+@pytest.fixture
+def anyio_backend():
+    return 'asyncio'
+
+
+pytestmark = pytest.mark.anyio
+
+
 async def test_extract():
     definition = Definition(key='testkey', url='http://example.com', pattern='test')
     await get_test_storage().set(definition.key, definition.dict())
@@ -28,7 +35,6 @@ async def test_extract():
     assert response.json() == definition.dict()
 
 
-@pytest.mark.anyio
 async def test_define():
     definition = Definition(key='testkey2', url='http://example.com', pattern='test2')
     async with AsyncClient(app=app, base_url="http://test") as ac:
