@@ -3,7 +3,7 @@ from enum import Enum
 from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, HttpUrl
 
-from .storage import DiskStorage
+from .storage import DiskStorage, Storage
 
 
 class Language(str, Enum):
@@ -30,7 +30,7 @@ async def root():
 
 
 @app.get('/extract/{key}')
-async def extract(key: str, storage: DiskStorage = Depends(get_storage)):
+async def extract(key: str, storage: Storage = Depends(get_storage)):
     try:
         return await storage.get(key)
     except KeyError as e:
@@ -38,6 +38,6 @@ async def extract(key: str, storage: DiskStorage = Depends(get_storage)):
 
 
 @app.post('/define/')
-async def define(definition: Definition, storage: DiskStorage = Depends(get_storage)):
+async def define(definition: Definition, storage: Storage = Depends(get_storage)):
     await storage.set(definition.key, definition.dict())
     return {'message': f'definition {definition.key} updated'}
