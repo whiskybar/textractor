@@ -1,9 +1,10 @@
+import os
 from enum import Enum
 
 from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, HttpUrl
 
-from .storage import DiskStorage, Storage
+from .storage import AzureCosmosStorage, DiskStorage, Storage
 
 
 class Language(str, Enum):
@@ -20,8 +21,13 @@ class Definition(BaseModel):
 app = FastAPI()
 
 
-def get_storage(path: str = '/tmp/storage.main') -> DiskStorage:
-    return DiskStorage(path)
+def get_storage(path: str = '/tmp/storage.main') -> Storage:
+    return AzureCosmosStorage(
+        host=os.environ['COSMOS_HOST'],
+        master_key=os.environ['COSMOS_MASTER_KEY'],
+        database=os.environ['COSMOS_DATABASE'],
+        container=os.environ['COSMOS_CONTAINER'],
+    )
 
 
 @app.get('/')
