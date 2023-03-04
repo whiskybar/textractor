@@ -2,6 +2,7 @@ import json
 import os
 
 from azure.cosmos.aio import CosmosClient
+from azure.cosmos.exceptions import CosmosResourceNotFoundError
 
 
 class Storage:
@@ -50,7 +51,13 @@ class AzureCosmosStorage(Storage):
         self.container = self.db.get_container_client(container)
 
     async def get(self, key: str) -> dict:
-        return await self.container.read_item(item=key, partition_key=key)
+        try:
+            result = await self.container.read_item(item=key, partition_key=key)
+        except CosmosResourceNotFoundError as e:
+            raise KeyError(key) from e
+        del result['id']
+        return result
 
     async def set(self, key: str, value: dict) -> None:
+        value['id'] = key
         await self.container.create_item(value)
