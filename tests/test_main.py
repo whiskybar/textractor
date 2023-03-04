@@ -18,14 +18,21 @@ def anyio_backend():
 pytestmark = pytest.mark.anyio
 
 
-async def test_extract(fastapi_dep, test_storage):
-    definition = Definition(key='testkey', url='http://example.com', pattern='test')
+@pytest.fixture
+def non_mocked_hosts() -> list:
+    return ['test']
+
+
+async def test_extract(fastapi_dep, test_storage, httpx_mock):
+    url = 'http://example.com'
+    httpx_mock.add_response(url=url, text='<title>Example</title>')
+    definition = Definition(key='testkey', url=url, pattern='title')
     with fastapi_dep(app).override({get_storage: test_storage}):
         await test_storage.set(definition.key, definition.dict())
         async with AsyncClient(app=app, base_url="http://test") as ac:
             response = await ac.get(f'/extract/{definition.key}')
     assert response.status_code == 200
-    assert response.json() == definition.dict()
+    assert response.text == '"Example"'
 
 
 async def test_define(fastapi_dep, test_storage):
