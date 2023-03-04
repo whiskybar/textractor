@@ -44,10 +44,8 @@ class DiskStorage(Storage):
 
 
 class AzureCosmosStorage(Storage):
-    def __init__(self, host, master_key, database, container):
-        self.client = CosmosClient(
-            host, {'masterKey': master_key}, user_agent='CosmosDBPythonQuickstart', user_agent_overwrite=True
-        )
+    def __init__(self, url, credential, database, container):
+        self.client = CosmosClient(url, credential)
         self.db = self.client.get_database_client(database)
         self.container = self.db.get_container_client(container)
 

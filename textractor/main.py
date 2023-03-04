@@ -23,8 +23,8 @@ app = FastAPI()
 
 def get_storage(path: str = '/tmp/storage.main') -> Storage:
     return AzureCosmosStorage(
-        host=os.environ['COSMOS_HOST'],
-        master_key=os.environ['COSMOS_MASTER_KEY'],
+        url=os.environ['COSMOS_URL'],
+        credential=os.environ['COSMOS_CREDENTIAL'],
         database=os.environ['COSMOS_DATABASE'],
         container=os.environ['COSMOS_CONTAINER'],
     )
