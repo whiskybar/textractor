@@ -18,6 +18,7 @@ pytest-env = "^0.8.1"
 pytest-asyncio = "^0.20.3"
 pytest-fastapi-deps = "^0.2.3"
 azure-cosmos = "^4.3.1"
+aiohttp = "^3.8.4"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"
