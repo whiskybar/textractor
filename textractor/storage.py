@@ -60,4 +60,4 @@ class AzureCosmosStorage(Storage):
 
     async def set(self, key: str, value: dict) -> None:
         value['id'] = key
-        await self.container.create_item(value)
+        await self.container.upsert_item(value)
