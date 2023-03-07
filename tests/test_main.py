@@ -35,6 +35,17 @@ async def test_extract(fastapi_dep, test_storage, httpx_mock):
     assert response.text == '"Example"'
 
 
+async def test_definition(fastapi_dep, test_storage):
+    url = 'http://example.com'
+    definition = Definition(key='testkey', url=url, pattern='title')
+    await test_storage.set(definition.key, dict(definition.dict(), garbage='extra key'))
+    with fastapi_dep(app).override({get_storage: test_storage}):
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(f'/definition/{definition.key}')
+    assert response.status_code == 200
+    assert response.json() == definition.dict()
+
+
 async def test_define(fastapi_dep, test_storage):
     definition = Definition(key='testkey2', url='http://example.com', pattern='test2')
     with fastapi_dep(app).override({get_storage: test_storage}):

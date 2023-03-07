@@ -55,6 +55,15 @@ async def extract(key: str, storage: Storage = Depends(get_storage)):
         return ''
 
 
+@app.get('/definition/{key}')
+async def definition(key: str, storage: Storage = Depends(get_storage)):
+    try:
+        result = await storage.get(key)
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=f'Key "{key}" not found') from e
+    return Definition(**result).dict()
+
+
 @app.post('/define/')
 async def define(definition: Definition, storage: Storage = Depends(get_storage)):
     await storage.set(definition.key, definition.dict())
