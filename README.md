@@ -1,5 +1,7 @@
 # textractor
-Extract text from websites (or APIs).
+Extract text from websites (or APIs). More like a sandbox for getting up to speed with some technologies.
+
+https://webxtractor.azurewebsites.net/docs
 
 ## New things to try
 
